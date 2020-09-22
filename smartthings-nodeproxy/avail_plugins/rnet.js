@@ -159,7 +159,7 @@ function Rnet() {
       for(var i=0; i<data.length; i++) {
         buffer.push(data[i]);
         if (data[i] == 0xf7) {
-          //logger('data: ' + stringifyByteArray(data));
+          logger('data: ' + stringifyByteArray(data));
           read(buffer);
           buffer = new Array();
         }
@@ -216,32 +216,32 @@ function Rnet() {
   function read(data) {
     if (data.length == 0) { return; }
     data.splice(-2);
-    //logger('RX < '+stringifyByteArray(data));
+    logger('RX < '+stringifyByteArray(data));
 
     var code = getSignificantBytes(data);
     if (!code) {
-      //logger('** no significant bytes found');
+      logger('** no significant bytes found');
       unhandledMessage(data);
       return;
     }
 
     // generic handler
-    //logger('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
+    logger('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
     var response = RESPONSE_TYPES[code];
     if (!response) {
-      //logger('** no response handler found: ' + code);
+      logger('** no response handler found: ' + code);
       unhandledMessage(data);
       return;
     }
-
+//tmp
     var matches = getMatches(data, response['pattern']);
     if (!matches) {
-      //logger('** no matches found for code: ' + code);
+      logger('** no matches found for code: ' + code);
       unhandledMessage(data);
       return;
     }
 
-    //logger('** OK matches: ' + matches);
+    logger('** OK matches: ' + matches);
     responseHandler = response['handler'];
     responseHandler(matches);
   }
@@ -384,7 +384,7 @@ function Rnet() {
     var flashTimeLow = buffer.shift();
     var flashTimeHigh = buffer.shift();
     var msgText = byteArrayToString(buffer);
-    //notify_handler({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
+    notify_handler({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
     logger({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
   }
 
@@ -505,7 +505,7 @@ function Rnet() {
                 "Message Type" : stringifyByte(data.shift()),
                 "Message Body" : stringifyByteArray(data)
               };
-    //logger('** unknown message: ' + JSON.stringify(msg));
+    logger('** unknown message: ' + JSON.stringify(msg));
   }
 
   /**
